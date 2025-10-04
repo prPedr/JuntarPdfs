@@ -5,108 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juntar PDFs</title>
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
-        <h2>Unir dois PDFs</h2>
+        <h2>Unir Arquivos PDF</h2>
+        <p>Selecione um ou mais arquivos para unir.</p>
 
-        <p>Selecione o primeiro PDF:</p>
         <div class="file-input-wrapper">
-            <input type="file" id="pdf1" accept="application/pdf" class="input-hidden">
-            <label for="pdf1" class="file-label" id="label-pdf1">
+            <input type="file" id="pdfInput" accept="application/pdf" class="input-hidden" multiple>
+            <label for="pdfInput" class="file-label">
                 <span class="file-icon">📁</span>
-                Escolher Primeiro Arquivo...
+                Escolher Arquivos...
             </label>
-            <span class="file-name" id="name-pdf1">Nenhum arquivo selecionado</span>
         </div>
 
-        <p>Selecione o segundo PDF:</p>
-        <div class="file-input-wrapper">
-            <input type="file" id="pdf2" accept="application/pdf" class="input-hidden">
-            <label for="pdf2" class="file-label" id="label-pdf2">
-                <span class="file-icon">📁</span>
-                Escolher Segundo Arquivo...
-            </label>
-            <span class="file-name" id="name-pdf2">Nenhum arquivo selecionado</span>
-        </div>
+        <div id="fileList" class="file-list"></div>
 
         <br>
-        <button id="juntar">Juntar PDFs</button>
+        <button id="juntar" disabled>Juntar PDFs</button>
     </div>
 
-    <script>
-        // Função para atualizar o texto do nome do arquivo
-        function updateFileName(inputId, nameId) {
-            const input = document.getElementById(inputId);
-            const nameSpan = document.getElementById(nameId);
-
-            input.addEventListener('change', () => {
-                if (input.files.length > 0) {
-                    // Pega o nome do primeiro arquivo
-                    nameSpan.textContent = input.files[0].name;
-                    nameSpan.style.color = '#007bff'; // Deixa o nome azul após a seleção
-                } else {
-                    nameSpan.textContent = 'Nenhum arquivo selecionado';
-                    nameSpan.style.color = '#6c757d';
-                }
-            });
-        }
-
-        // Aplica a função para ambos os inputs
-        updateFileName('pdf1', 'name-pdf1');
-        updateFileName('pdf2', 'name-pdf2');
-    </script>
-
-    <script type="module">
-        import { PDFDocument } from "https://cdn.skypack.dev/pdf-lib";
-
-        document.getElementById("juntar").addEventListener("click", async () => {
-            const arquivo1 = document.getElementById("pdf1").files[0];
-            const arquivo2 = document.getElementById("pdf2").files[0];
-
-            if (!arquivo1 || !arquivo2) {
-                alert("Selecione dois PDFs!");
-                return;
-            }
-
-            // Oculta o botão e mostra um indicador de carregamento (opcional, mas bom para UX)
-            const btn = document.getElementById("juntar");
-            const originalText = btn.textContent;
-            btn.textContent = "Processando...";
-            btn.disabled = true;
-
-            try {
-                const pdfFinal = await PDFDocument.create();
-
-                for (const arquivo of [arquivo1, arquivo2]) {
-                    const conteudo = await arquivo.arrayBuffer();
-                    const pdfCarregado = await PDFDocument.load(conteudo);
-                    const paginasCopiadas = await pdfFinal.copyPages(pdfCarregado, pdfCarregado.getPageIndices());
-                    paginasCopiadas.forEach((pagina) => pdfFinal.addPage(pagina));
-                }
-
-                const bytesFinal = await pdfFinal.save();
-
-                // Criar link de download
-                const blob = new Blob([bytesFinal], { type: "application/pdf" });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = "saida_unida.pdf"; // Nome do arquivo de saída
-                link.click();
-                URL.revokeObjectURL(url);
-                
-                alert("PDFs unidos com sucesso e prontos para download!");
-
-            } catch (error) {
-                console.error("Erro ao juntar PDFs:", error);
-                alert("Ocorreu um erro ao processar os arquivos. Verifique se são PDFs válidos.");
-            } finally {
-                // Restaura o botão
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        });
-    </script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

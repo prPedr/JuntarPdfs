@@ -78,7 +78,6 @@ p {
     cursor: pointer;
     transition: all 0.3s ease;
     box-sizing: border-box;
-    margin-bottom: 8px;
 }
 
 .file-label:hover {
@@ -86,28 +85,58 @@ p {
     color: white;
 }
 
-.file-label:active {
-    transform: translateY(1px);
-}
-
 .file-icon {
     font-size: 1.2em;
     margin-right: 8px;
 }
 
-.file-name {
-    display: block;
+.file-list {
+    margin-top: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f1f3f5;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
     font-size: 0.9em;
-    color: #6c757d;
-    padding: 5px 0 0 5px;
-    word-break: break-all;
+    border-left: 4px solid #007bff;
+}
+
+.file-item-name {
+    color: #343a40;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    color: #dc3545;
+    font-size: 1.4em;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.delete-btn:hover {
+    color: #a71d2a;
 }
 
 #juntar {
     display: block;
     width: 100%;
     padding: 15px 20px;
-    background-color: #007bff;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 8px;
@@ -115,16 +144,20 @@ p {
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.1s ease;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
 }
 
 #juntar:hover {
-    background-color: #0056b3;
-    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+    background-color: #218838;
 }
 
-#juntar:active {
-    background-color: #004085;
+#juntar:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+#juntar:active:not(:disabled) {
     transform: translateY(2px);
     box-shadow: none;
 }
@@ -136,12 +169,5 @@ p {
     .container {
         padding: 25px 20px;
         margin: 0 10px;
-    }
-    h2 {
-        font-size: 1.8em;
-    }
-    #juntar {
-        font-size: 1.1em;
-        padding: 12px;
     }
 }
