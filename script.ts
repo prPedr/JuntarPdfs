@@ -63,3 +63,73 @@ function tratarSelecaoDeArquivos(evento: Event): void {
     
     renderizarListaDeArquivos();
 }
+
+async function juntarPdfs(): Promise<void> {
+    if (!botaoJuntar) return;
+
+    if (arquivosSelecionados.length < 2) {
+        Swal.fire({
+            title: 'Atenção!',
+            text: 'Por favor, selecione pelo menos dois arquivos PDF para unir.',
+            icon: 'warning',
+            confirmButtonColor: '#007bff'
+        });
+        return;
+    }
+
+    const textoOriginalBotao = botaoJuntar.textContent || 'Juntar PDFs';
+    botaoJuntar.textContent = "Processando...";
+    botaoJuntar.disabled = true;
+
+    try {
+        const pdfFinal = await PDFDocument.create();
+
+        for (const arquivo of arquivosSelecionados) {
+            const conteudoArquivo = await arquivo.arrayBuffer();
+            const pdfParaJuntar = await PDFDocument.load(conteudoArquivo);
+            
+            // Copia todas as páginas
+            const paginasCopiadas = await pdfFinal.copyPages(pdfParaJuntar, pdfParaJuntar.getPageIndices());
+            paginasCopiadas.forEach(pagina => pdfFinal.addPage(pagina));
+        }
+
+        const bytesPdfFinal = await pdfFinal.save();
+
+        Swal.fire({
+            title: 'Sucesso!',
+            text: 'Seus PDFs foram unidos e o download começará em breve.',
+            icon: 'success',
+            confirmButtonColor: '#28a745'
+        });
+
+        setTimeout(() => {
+            const blob = new Blob([bytesPdfFinal], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "PDFs_unidos.pdf";
+            link.click();
+            URL.revokeObjectURL(url);
+        }, 100);
+
+    } catch (erro) {
+        console.error("Erro ao juntar os PDFs:", erro);
+        Swal.fire({
+            title: 'Ocorreu um Erro!',
+            text: 'Não foi possível unir os arquivos. Verifique se todos são PDFs válidos e tente novamente.',
+            icon: 'error',
+            confirmButtonColor: '#dc3545'
+        });
+    } finally {
+        botaoJuntar.textContent = textoOriginalBotao;
+        botaoJuntar.disabled = (arquivosSelecionados.length < 2);
+    }
+}
+
+if (inputArquivoPdf) {
+    inputArquivoPdf.addEventListener('change', tratarSelecaoDeArquivos);
+}
+
+if (botaoJuntar) {
+    botaoJuntar.addEventListener('click', juntarPdfs);
+}
