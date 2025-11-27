@@ -1,18 +1,13 @@
 import { PDFDocument } from "pdf-lib";
 
-// Declaração global para o SweetAlert2 (caso esteja usando via CDN)
-// Se estiver usando via npm: import Swal from 'sweetalert2';
 declare const Swal: any;
 
-// Seleção de elementos com Casting (Tipagem explícita)
 const inputArquivoPdf = document.getElementById("pdfInput") as HTMLInputElement | null;
 const containerListaDeArquivos = document.getElementById("fileList") as HTMLDivElement | null;
 const botaoJuntar = document.getElementById("juntar") as HTMLButtonElement | null;
 
-// Tipagem do estado: Array de objetos File
 let arquivosSelecionados: File[] = [];
 
-// Função para renderizar a lista visual
 function renderizarListaDeArquivos(): void {
     if (!containerListaDeArquivos || !botaoJuntar) return;
 
@@ -29,9 +24,7 @@ function renderizarListaDeArquivos(): void {
         const botaoExcluir = document.createElement('button');
         botaoExcluir.className = 'delete-btn';
         botaoExcluir.textContent = '×';
-        
-        // Não é estritamente necessário dataset aqui se usarmos o closure, 
-        // mas mantive a lógica limpa.
+
         botaoExcluir.addEventListener('click', () => {
             arquivosSelecionados = arquivosSelecionados.filter(f => f.name !== arquivo.name);
             renderizarListaDeArquivos();
@@ -42,7 +35,6 @@ function renderizarListaDeArquivos(): void {
         containerListaDeArquivos.appendChild(itemArquivo);
     });
 
-    // Controle do estado do botão
     if (arquivosSelecionados.length >= 2) {
         botaoJuntar.disabled = false;
         botaoJuntar.textContent = `Juntar ${arquivosSelecionados.length} PDFs`;
@@ -50,4 +42,24 @@ function renderizarListaDeArquivos(): void {
         botaoJuntar.disabled = true;
         botaoJuntar.textContent = 'Juntar PDFs';
     }
+}
+
+function tratarSelecaoDeArquivos(evento: Event): void {
+    const target = evento.target as HTMLInputElement;
+
+    if (!target.files) return;
+
+    const novosArquivos = Array.from(target.files);
+
+    novosArquivos.forEach(novoArquivo => {
+        if (!arquivosSelecionados.some(arquivoExistente => arquivoExistente.name === novoArquivo.name)) {
+            arquivosSelecionados.push(novoArquivo);
+        }
+    });
+
+    if (inputArquivoPdf) {
+        inputArquivoPdf.value = '';
+    }
+    
+    renderizarListaDeArquivos();
 }
