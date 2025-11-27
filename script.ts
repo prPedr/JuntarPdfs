@@ -103,7 +103,7 @@ async function juntarPdfs(): Promise<void> {
         });
 
         setTimeout(() => {
-            const blob = new Blob([bytesPdfFinal], { type: "application/pdf" });
+            const blob = new Blob([bytesPdfFinal as unknown as BlobPart], { type: "application/pdf" });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
