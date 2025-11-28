@@ -9,14 +9,15 @@ let botaoJuntar: HTMLButtonElement | null = null;
 let arquivosSelecionados: File[] = [];
 
 function renderizarListaDeArquivos(): void {
-    // 1. Criamos uma referência LOCAL para as variáveis globais
     const container = containerListaDeArquivos;
     const botao = botaoJuntar;
 
-    // 2. Verificamos as locais
-    if (!container || !botao) return;
+    if (!container) {
+        console.error("Erro: Container 'fileList' não encontrado.");
+        return;
+    }
 
-    container.innerHTML = ''; // Agora o TS sabe que 'container' é seguro
+    container.innerHTML = '';
 
     arquivosSelecionados.forEach(arquivo => {
         const itemArquivo = document.createElement('div');
@@ -37,20 +38,24 @@ function renderizarListaDeArquivos(): void {
 
         itemArquivo.appendChild(nomeArquivo);
         itemArquivo.appendChild(botaoExcluir);
-        container.appendChild(itemArquivo); 
+
+        container.appendChild(itemArquivo);
     });
 
-    if (arquivosSelecionados.length >= 2) {
-        botao.disabled = false;
-        botao.textContent = `Juntar ${arquivosSelecionados.length} PDFs`;
-    } else {
-        botao.disabled = true;
-        botao.textContent = 'Juntar PDFs';
+    if (botao) {
+        if (arquivosSelecionados.length >= 2) {
+            botao.disabled = false;
+            botao.textContent = `Juntar ${arquivosSelecionados.length} PDFs`;
+        } else {
+            botao.disabled = true;
+            botao.textContent = 'Juntar PDFs';
+        }
     }
 }
 
 function tratarSelecaoDeArquivos(evento: Event): void {
     const target = evento.target as HTMLInputElement;
+
     if (!target.files) return;
 
     const novosArquivos = Array.from(target.files);
@@ -91,6 +96,7 @@ async function juntarPdfs(): Promise<void> {
         for (const arquivo of arquivosSelecionados) {
             const conteudoArquivo = await arquivo.arrayBuffer();
             const pdfParaJuntar = await PDFDocument.load(conteudoArquivo);
+
             const paginasCopiadas = await pdfFinal.copyPages(pdfParaJuntar, pdfParaJuntar.getPageIndices());
             paginasCopiadas.forEach(pagina => pdfFinal.addPage(pagina));
         }
@@ -106,6 +112,7 @@ async function juntarPdfs(): Promise<void> {
 
         setTimeout(() => {
             const blob = new Blob([bytesPdfFinal as any], { type: "application/pdf" });
+            
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
@@ -123,8 +130,10 @@ async function juntarPdfs(): Promise<void> {
             confirmButtonColor: '#dc3545'
         });
     } finally {
-        botaoJuntar.textContent = textoOriginalBotao;
-        botaoJuntar.disabled = (arquivosSelecionados.length < 2);
+        if (botaoJuntar) {
+            botaoJuntar.textContent = textoOriginalBotao;
+            botaoJuntar.disabled = (arquivosSelecionados.length < 2);
+        }
     }
 }
 
@@ -135,12 +144,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (inputArquivoPdf) {
         inputArquivoPdf.addEventListener('change', tratarSelecaoDeArquivos);
-        console.log("Sistema de PDF iniciado com sucesso.");
     } else {
-        console.error("Erro: Input 'pdfInput' não encontrado no HTML.");
+        console.error("Erro crítico: Input 'pdfInput' não encontrado.");
     }
 
     if (botaoJuntar) {
         botaoJuntar.addEventListener('click', juntarPdfs);
+    } else {
+        console.error("Erro crítico: Botão 'juntar' não encontrado.");
     }
 });
