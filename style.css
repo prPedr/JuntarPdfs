@@ -1,13 +1,18 @@
 :root {
-    --primary-color: #6366f1;       /* Indigo 500 */
-    --primary-hover: #4f46e5;       /* Indigo 600 */
-    --bg-dark: #0f172a;             /* Slate 900 */
-    --card-bg: rgba(30, 41, 59, 0.75); /* Slate 800 (Glass) */
-    --text-main: #f8fafc;           /* Slate 50 */
-    --text-muted: #94a3b8;          /* Slate 400 */
-    --border-color: #334155;        /* Slate 700 */
-    --danger-color: #ef4444;        /* Red 500 */
-    --success-color: #10b981;       /* Emerald 500 */
+    --primary-color: #6366f1;
+    /* Indigo 500 */
+    --primary-hover: #4f46e5;
+    /* Indigo 600 */
+    --bg-dark: #0f172a;
+    /* Slate 900 */
+    --card-bg: rgba(30, 41, 59, 0.75);
+    --nav-bg: rgba(15, 23, 42, 0.85);
+    /* Fundo da Navbar */
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --danger-color: #ef4444;
+    --success-color: #10b981;
 }
 
 /* --- Reset e Base --- */
@@ -15,127 +20,154 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-main);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     margin: 0;
-    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* Importante para a navbar ficar no topo */
 }
 
-/* Fundo Animado (Mesh Gradient) */
+/* Fundo Animado */
 .background-mesh {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
         radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 25%);
     z-index: -1;
 }
 
-/* --- Container Principal --- */
-.container {
-    background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 35px;
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+/* --- NAVBAR (NOVO) --- */
+.navbar {
     width: 100%;
-    max-width: 480px;
-    box-sizing: border-box;
-    animation: fadeIn 0.6s ease-out;
-}
-
-/* --- Abas de Navegação --- */
-.tabs {
+    height: 70px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
-    background: rgba(15, 23, 42, 0.5);
-    padding: 5px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    border: 1px solid var(--border-color);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.tab-btn {
-    flex: 1;
-    background: transparent;
-    border: none;
+.brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #fff, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-item {
+    text-decoration: none;
     color: var(--text-muted);
-    padding: 10px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 16px;
     border-radius: 8px;
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.9rem;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
 }
 
-.tab-btn:hover {
+.nav-item:hover {
     color: var(--text-main);
     background: rgba(255, 255, 255, 0.05);
 }
 
-.tab-btn.active {
-    background: var(--primary-color);
+.nav-item.active {
     color: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    background: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
 }
 
-/* --- Cabeçalho --- */
+/* --- Layout Centralizado --- */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* --- Container da Ferramenta --- */
+.container {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 500px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* --- Cabeçalho Interno --- */
 header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .icon-header {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 15px;
-    font-size: 1.6rem;
+    margin: 0 auto 20px;
+    font-size: 1.8rem;
     color: white;
     box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
-    transition: transform 0.3s ease;
 }
 
 h2 {
     margin: 0;
     font-weight: 600;
     font-size: 1.6rem;
-    letter-spacing: -0.5px;
 }
 
 p {
     color: var(--text-muted);
     font-size: 0.95rem;
     margin-top: 8px;
-    line-height: 1.5;
 }
 
-/* --- Área de Upload --- */
-.input-hidden { display: none; }
+/* --- Upload Area --- */
+.input-hidden {
+    display: none;
+}
 
 .upload-area {
     border: 2px dashed var(--border-color);
     border-radius: 16px;
-    padding: 25px 20px;
+    padding: 30px 20px;
     text-align: center;
     transition: all 0.3s ease;
     cursor: pointer;
     background: rgba(15, 23, 42, 0.3);
 }
 
-.upload-area:hover, .upload-area.drag-over {
+.upload-area:hover,
+.upload-area.drag-over {
     border-color: var(--primary-color);
     background: rgba(99, 102, 241, 0.08);
     transform: translateY(-2px);
@@ -146,7 +178,6 @@ p {
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    width: 100%;
 }
 
 .upload-icon {
@@ -168,35 +199,53 @@ p {
 
 /* --- Lista de Arquivos --- */
 .file-list {
-    margin-top: 20px;
-    max-height: 240px;
+    margin-top: 25px;
+    max-height: 250px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding-right: 5px;
+    gap: 10px;
 }
 
-/* Scrollbar fina */
-.file-list::-webkit-scrollbar { width: 5px; }
-.file-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+.file-list::-webkit-scrollbar {
+    width: 5px;
+}
 
-/* Item do Arquivo */
+.file-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
 .file-item {
     background: rgba(51, 65, 85, 0.4);
-    padding: 10px 14px;
+    padding: 12px 16px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid rgba(255,255,255,0.05);
-    user-select: none; /* Melhora a experiência do drag */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* Lógica de Drag */
+    cursor: grab;
     transition: transform 0.2s, background-color 0.2s;
 }
 
-/* Ícone de PDF no item */
+.file-item:active {
+    cursor: grabbing;
+}
+
+.file-item.dragging {
+    opacity: 0.5;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px dashed var(--primary-color);
+}
+
+.file-item.drag-over-target {
+    border-bottom: 2px solid var(--success-color);
+    transform: translateY(2px);
+}
+
 .file-icon-item {
-    color: var(--danger-color); /* Vermelho PDF */
+    color: var(--danger-color);
     font-size: 1.2rem;
     margin-right: 12px;
 }
@@ -218,27 +267,18 @@ p {
     padding: 6px;
     border-radius: 6px;
     margin-left: 8px;
-    transition: color 0.2s;
 }
 
-.delete-btn:hover { color: var(--danger-color); }
-
-/* --- Efeitos de Drag & Drop (Reordenação) --- */
-.file-item.dragging {
-    opacity: 0.5;
-    background: rgba(99, 102, 241, 0.2);
-    border: 1px dashed var(--primary-color);
-}
-
-.file-item.drag-over-target {
-    border-bottom: 2px solid var(--success-color); /* Linha verde onde vai cair */
-    transform: translateY(2px);
+.delete-btn:hover {
+    color: var(--danger-color);
 }
 
 /* --- Botão Principal --- */
-.actions { margin-top: 25px; }
+.actions {
+    margin-top: 30px;
+}
 
-#btnAcao {
+#btnJuntar {
     width: 100%;
     padding: 16px;
     border: none;
@@ -254,30 +294,45 @@ p {
     gap: 10px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.25);
-    font-family: inherit;
 }
 
-#btnAcao:not(:disabled):hover {
+#btnJuntar:not(:disabled):hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
-    filter: brightness(1.1);
 }
 
-#btnAcao:disabled {
+#btnJuntar:disabled {
     background: #334155;
     color: #64748b;
     cursor: not-allowed;
     box-shadow: none;
 }
 
-/* --- Animações --- */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* --- Responsivo --- */
+@media (max-width: 600px) {
+    .navbar {
+        padding: 0 20px;
+    }
+
+    .nav-item span {
+        display: none;
+    }
+
+    /* Esconde texto no mobile, mostra só ícone */
+    .container {
+        padding: 25px;
+        margin: 10px;
+    }
 }
 
-/* --- Responsivo --- */
-@media (max-width: 500px) {
-    .container { padding: 20px; margin: 15px; }
-    h2 { font-size: 1.4rem; }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
