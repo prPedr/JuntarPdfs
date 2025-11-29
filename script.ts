@@ -3,16 +3,13 @@ import { PDFDocument } from "pdf-lib";
 declare const Swal: any;
 
 let arquivosSelecionados: File[] = [];
+let dragStartIndex: number | null = null;
 
-// Elementos do DOM
 let inputArquivoPdf: HTMLInputElement | null = null;
 let dropZone: HTMLDivElement | null = null;
 let containerListaDeArquivos: HTMLDivElement | null = null;
 let botaoJuntar: HTMLButtonElement | null = null;
 
-/**
- * Atualiza a visualização da lista de arquivos no HTML
- */
 function renderizarListaDeArquivos(): void {
     const container = containerListaDeArquivos;
     const botao = botaoJuntar;
@@ -25,28 +22,75 @@ function renderizarListaDeArquivos(): void {
         // Cria o card do arquivo
         const itemArquivo = document.createElement('div');
         itemArquivo.className = 'file-item';
+        
+        // --- LÓGICA DE REORDENAÇÃO (Drag & Drop na Lista) ---
+        itemArquivo.setAttribute('draggable', 'true');
+        itemArquivo.setAttribute('data-index', index.toString());
 
-        // Cria o ícone de PDF
+        // 1. Início do arrasto
+        itemArquivo.addEventListener('dragstart', () => {
+            dragStartIndex = index;
+            itemArquivo.classList.add('dragging');
+            // Timeout para o efeito visual fantasma funcionar
+            setTimeout(() => itemArquivo.style.opacity = '0.5', 0);
+        });
+
+        // 2. Fim do arrasto
+        itemArquivo.addEventListener('dragend', () => {
+            itemArquivo.classList.remove('dragging');
+            itemArquivo.style.opacity = '1';
+            dragStartIndex = null;
+            
+            // Limpa estilos visuais de todos os itens
+            document.querySelectorAll('.file-item').forEach(el => 
+                el.classList.remove('drag-over-target')
+            );
+        });
+
+        // 3. Arrastando por cima de outro item
+        itemArquivo.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Permite o drop
+            if (dragStartIndex !== null && dragStartIndex !== index) {
+                itemArquivo.classList.add('drag-over-target');
+            }
+        });
+
+        // 4. Saiu de cima
+        itemArquivo.addEventListener('dragleave', () => {
+            itemArquivo.classList.remove('drag-over-target');
+        });
+
+        // 5. Soltou o item
+        itemArquivo.addEventListener('drop', (e) => {
+            e.preventDefault();
+            itemArquivo.classList.remove('drag-over-target');
+            
+            if (dragStartIndex !== null && dragStartIndex !== index) {
+                trocarPosicaoArray(dragStartIndex, index);
+            }
+        });
+        // --- FIM DA LÓGICA DE REORDENAÇÃO ---
+
+        // Ícone de PDF
         const iconPdf = document.createElement('i');
         iconPdf.className = 'fa-regular fa-file-pdf file-icon-item';
 
-        // Cria o span com o nome
+        // Nome do arquivo
         const nomeArquivo = document.createElement('span');
         nomeArquivo.className = 'file-item-name';
         nomeArquivo.textContent = arquivo.name;
 
-        // Cria o botão de excluir com ícone de lixeira
+        // Botão de Excluir
         const botaoExcluir = document.createElement('button');
         botaoExcluir.className = 'delete-btn';
         botaoExcluir.innerHTML = '<i class="fa-solid fa-trash"></i>';
         
-        // Evento de remover
         botaoExcluir.addEventListener('click', (e) => {
-            e.stopPropagation(); // Evita cliques indesejados
+            e.stopPropagation(); // Evita conflito com drag
             removerArquivo(index);
         });
 
-        // Monta o item
+        // Montagem do item
         itemArquivo.appendChild(iconPdf);
         itemArquivo.appendChild(nomeArquivo);
         itemArquivo.appendChild(botaoExcluir);
@@ -57,7 +101,6 @@ function renderizarListaDeArquivos(): void {
     if (botao) {
         if (arquivosSelecionados.length >= 2) {
             botao.disabled = false;
-            // Usamos innerHTML para manter o ícone de seta
             botao.innerHTML = `<span>Juntar ${arquivosSelecionados.length} PDFs</span> <i class="fa-solid fa-arrow-right"></i>`;
         } else {
             botao.disabled = true;
@@ -67,7 +110,16 @@ function renderizarListaDeArquivos(): void {
 }
 
 /**
- * Remove um arquivo específico do array e renderiza novamente
+ * Helper para trocar itens de posição no Array
+ */
+function trocarPosicaoArray(fromIndex: number, toIndex: number): void {
+    const itemMovido = arquivosSelecionados.splice(fromIndex, 1)[0];
+    arquivosSelecionados.splice(toIndex, 0, itemMovido);
+    renderizarListaDeArquivos();
+}
+
+/**
+ * Remove um arquivo e atualiza a tela
  */
 function removerArquivo(index: number): void {
     arquivosSelecionados.splice(index, 1);
@@ -75,7 +127,7 @@ function removerArquivo(index: number): void {
 }
 
 /**
- * Processa arquivos vindos do Input ou do Drag&Drop
+ * Processa novos arquivos (Input ou DropZone)
  */
 function processarArquivos(files: FileList | null): void {
     if (!files) return;
@@ -84,7 +136,7 @@ function processarArquivos(files: FileList | null): void {
     let adicionou = false;
 
     novosArquivos.forEach(novoArquivo => {
-        // Validação simples de tipo e duplicidade
+        // Verifica tipo e duplicidade
         if (novoArquivo.type === "application/pdf" && 
             !arquivosSelecionados.some(existente => existente.name === novoArquivo.name)) {
             arquivosSelecionados.push(novoArquivo);
@@ -98,22 +150,20 @@ function processarArquivos(files: FileList | null): void {
 }
 
 /**
- * Evento do Input File tradicional
+ * Handler do Input File padrão
  */
 function tratarSelecaoInput(evento: Event): void {
     const target = evento.target as HTMLInputElement;
     processarArquivos(target.files);
-    // Limpa o input para permitir selecionar o mesmo arquivo novamente se necessário
-    target.value = '';
+    target.value = ''; // Reset para permitir selecionar o mesmo arquivo
 }
 
 /**
- * Configura os eventos de Drag & Drop (Arrastar e Soltar)
+ * Configura Drag & Drop da Zona de Upload (DropZone)
  */
-function configurarDragAndDrop(): void {
+function configurarDragAndDropUpload(): void {
     if (!dropZone) return;
 
-    // Previne comportamento padrão do navegador
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropZone?.addEventListener(eventName, (e) => {
             e.preventDefault();
@@ -121,19 +171,16 @@ function configurarDragAndDrop(): void {
         }, false);
     });
 
-    // Adiciona efeito visual
     dropZone.addEventListener('dragover', () => {
         dropZone?.classList.add('drag-over');
     });
 
-    // Remove efeito visual
     ['dragleave', 'drop'].forEach(eventName => {
         dropZone?.addEventListener(eventName, () => {
             dropZone?.classList.remove('drag-over');
         });
     });
 
-    // Captura os arquivos soltos
     dropZone.addEventListener('drop', (e: DragEvent) => {
         const dt = e.dataTransfer;
         if (dt) {
@@ -143,7 +190,7 @@ function configurarDragAndDrop(): void {
 }
 
 /**
- * Lógica principal de junção dos PDFs
+ * Lógica Principal de Junção
  */
 async function juntarPdfs(): Promise<void> {
     if (!botaoJuntar) return;
@@ -153,14 +200,14 @@ async function juntarPdfs(): Promise<void> {
             title: 'Ops!',
             text: 'Você precisa de pelo menos 2 arquivos para mesclar.',
             icon: 'warning',
-            confirmButtonColor: '#6366f1', // Cor Indigo do tema
+            confirmButtonColor: '#6366f1',
             background: '#1e293b',
             color: '#fff'
         });
         return;
     }
 
-    // Estado de Loading
+    // Estado de Carregamento
     const conteudoOriginal = botaoJuntar.innerHTML;
     botaoJuntar.innerHTML = `<span>Processando...</span> <i class="fa-solid fa-spinner fa-spin"></i>`;
     botaoJuntar.disabled = true;
@@ -177,17 +224,16 @@ async function juntarPdfs(): Promise<void> {
 
         const pdfBytes = await pdfFinal.save();
 
-        // Alerta de Sucesso estilizado
-        await Swal.fire({
+        Swal.fire({
             title: 'Pronto!',
             text: 'Seus PDFs foram unidos com sucesso.',
             icon: 'success',
-            confirmButtonColor: '#10b981', // Verde Emerald
+            confirmButtonColor: '#10b981',
             background: '#1e293b',
             color: '#fff'
         });
 
-        // Download automático
+        // Correção do erro de Blob usando 'as any'
         const blob = new Blob([pdfBytes as any], { type: "application/pdf" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
@@ -208,12 +254,13 @@ async function juntarPdfs(): Promise<void> {
         });
     } finally {
         if (botaoJuntar) {
-            botaoJuntar.disabled = (arquivosSelecionados.length < 2);
-            // Se ainda tiver arquivos (não limpamos a lista), volta o texto normal
+            // Restaura o botão se ainda houver arquivos na lista
             if (arquivosSelecionados.length >= 2) {
+                botaoJuntar.disabled = false;
                 botaoJuntar.innerHTML = `<span>Juntar ${arquivosSelecionados.length} PDFs</span> <i class="fa-solid fa-arrow-right"></i>`;
             } else {
                 botaoJuntar.innerHTML = conteudoOriginal;
+                botaoJuntar.disabled = true; // Garante que volta desativado se o usuário limpou a lista durante o processo (raro, mas seguro)
             }
         }
     }
@@ -234,6 +281,5 @@ document.addEventListener("DOMContentLoaded", () => {
         botaoJuntar.addEventListener('click', juntarPdfs);
     }
 
-    // Inicia ouvintes de Drag & Drop
-    configurarDragAndDrop();
+    configurarDragAndDropUpload();
 });
