@@ -1,32 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juntar PDFs</title>
+    <title>Juntar PDFs | Ferramenta Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-    <div class="container">
-        <h2>Unir Arquivos PDF</h2>
-        <p>Selecione um ou mais arquivos para unir.</p>
 
-        <div class="file-input-wrapper">
+<body>
+
+    <div class="background-mesh"></div>
+
+    <div class="container">
+        <header>
+            <div class="icon-header">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+            <h2>Mesclar PDFs</h2>
+            <p>Organize seus documentos em um único arquivo rápido e fácil.</p>
+        </header>
+
+        <div class="upload-area" id="dropZone">
             <input type="file" id="pdfInput" accept="application/pdf" class="input-hidden" multiple>
-            <label for="pdfInput" class="file-label">
-                <span class="file-icon">📁</span>
-                Escolher Arquivos...
+            <label for="pdfInput" class="upload-label">
+                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                <span class="upload-text">Clique para selecionar</span>
+                <span class="upload-hint">ou arraste seus arquivos aqui</span>
             </label>
         </div>
 
-        <div id="fileList" class="file-list"></div>
+        <div id="fileList" class="file-list">
+        </div>
 
-        <br>
-        <button id="juntar" disabled>Juntar PDFs</button>
+        <div class="actions">
+            <button id="juntar" disabled>
+                <span>Mesclar Arquivos</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
     </div>
 
     <script type="module" src="script.ts"></script>
 </body>
+
 </html>
