@@ -1,14 +1,16 @@
 :root {
-    --primary-color: #6366f1;
-    --primary-hover: #4f46e5;
-    --bg-dark: #0f172a;
-    --card-bg: rgba(30, 41, 59, 0.7); 
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: #334155;
-    --danger-color: #ef4444;
+    --primary-color: #6366f1;       /* Indigo 500 */
+    --primary-hover: #4f46e5;       /* Indigo 600 */
+    --bg-dark: #0f172a;             /* Slate 900 */
+    --card-bg: rgba(30, 41, 59, 0.75); /* Slate 800 (Glass) */
+    --text-main: #f8fafc;           /* Slate 50 */
+    --text-muted: #94a3b8;          /* Slate 400 */
+    --border-color: #334155;        /* Slate 700 */
+    --danger-color: #ef4444;        /* Red 500 */
+    --success-color: #10b981;       /* Emerald 500 */
 }
 
+/* --- Reset e Base --- */
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-dark);
@@ -21,6 +23,7 @@ body {
     overflow-x: hidden;
 }
 
+/* Fundo Animado (Mesh Gradient) */
 .background-mesh {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -30,13 +33,14 @@ body {
     z-index: -1;
 }
 
+/* --- Container Principal --- */
 .container {
     background: var(--card-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 40px;
+    padding: 35px;
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     width: 100%;
     max-width: 480px;
@@ -44,32 +48,71 @@ body {
     animation: fadeIn 0.6s ease-out;
 }
 
+/* --- Abas de Navegação --- */
+.tabs {
+    display: flex;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 5px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* --- Cabeçalho --- */
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .icon-header {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 1.8rem;
+    margin: 0 auto 15px;
+    font-size: 1.6rem;
     color: white;
     box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+    transition: transform 0.3s ease;
 }
 
 h2 {
     margin: 0;
     font-weight: 600;
-    font-size: 1.75rem;
-    background: linear-gradient(to right, #fff, #cbd5e1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 1.6rem;
+    letter-spacing: -0.5px;
 }
 
 p {
@@ -79,24 +122,22 @@ p {
     line-height: 1.5;
 }
 
-.input-hidden {
-    display: none;
-}
+/* --- Área de Upload --- */
+.input-hidden { display: none; }
 
 .upload-area {
     border: 2px dashed var(--border-color);
     border-radius: 16px;
-    padding: 30px 20px;
+    padding: 25px 20px;
     text-align: center;
     transition: all 0.3s ease;
     cursor: pointer;
     background: rgba(15, 23, 42, 0.3);
-    position: relative;
 }
 
 .upload-area:hover, .upload-area.drag-over {
     border-color: var(--primary-color);
-    background: rgba(99, 102, 241, 0.05);
+    background: rgba(99, 102, 241, 0.08);
     transform: translateY(-2px);
 }
 
@@ -106,66 +147,56 @@ p {
     align-items: center;
     cursor: pointer;
     width: 100%;
-    height: 100%;
 }
 
 .upload-icon {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     color: var(--primary-color);
-    margin-bottom: 15px;
-    transition: transform 0.3s ease;
-}
-
-.upload-area:hover .upload-icon {
-    transform: scale(1.1);
+    margin-bottom: 12px;
 }
 
 .upload-text {
     font-weight: 600;
-    font-size: 1.1rem;
-    color: var(--text-main);
+    font-size: 1rem;
 }
 
 .upload-hint {
     font-size: 0.85rem;
     color: var(--text-muted);
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
+/* --- Lista de Arquivos --- */
 .file-list {
-    margin-top: 25px;
-    max-height: 250px;
+    margin-top: 20px;
+    max-height: 240px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     padding-right: 5px;
 }
 
-.file-list::-webkit-scrollbar {
-    width: 6px;
-}
-.file-list::-webkit-scrollbar-track {
-    background: transparent;
-}
-.file-list::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 3px;
-}
+/* Scrollbar fina */
+.file-list::-webkit-scrollbar { width: 5px; }
+.file-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
 
+/* Item do Arquivo */
 .file-item {
-    background: rgba(51, 65, 85, 0.5);
-    padding: 12px 16px;
+    background: rgba(51, 65, 85, 0.4);
+    padding: 10px 14px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border: 1px solid rgba(255,255,255,0.05);
-    animation: slideIn 0.3s ease;
+    user-select: none; /* Melhora a experiência do drag */
+    transition: transform 0.2s, background-color 0.2s;
 }
 
+/* Ícone de PDF no item */
 .file-icon-item {
-    color: #ef4444;
+    color: var(--danger-color); /* Vermelho PDF */
     font-size: 1.2rem;
     margin-right: 12px;
 }
@@ -179,26 +210,6 @@ p {
     color: #e2e8f0;
 }
 
-.file-item {
-    cursor: grab;
-    transition: transform 0.2s ease, background-color 0.2s;
-}
-
-.file-item:active {
-    cursor: grabbing;
-}
-
-.file-item.dragging {
-    opacity: 0.5;
-    background: rgba(99, 102, 241, 0.2);
-    border: 1px dashed #6366f1;
-    transform: scale(0.98);
-}
-
-.file-item.drag-over-target {
-    border-top: 2px solid #10b981;
-}
-
 .delete-btn {
     background: none;
     border: none;
@@ -206,20 +217,28 @@ p {
     cursor: pointer;
     padding: 6px;
     border-radius: 6px;
-    transition: all 0.2s;
-    margin-left: 10px;
+    margin-left: 8px;
+    transition: color 0.2s;
 }
 
-.delete-btn:hover {
-    color: var(--danger-color);
-    background: rgba(239, 68, 68, 0.1);
+.delete-btn:hover { color: var(--danger-color); }
+
+/* --- Efeitos de Drag & Drop (Reordenação) --- */
+.file-item.dragging {
+    opacity: 0.5;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px dashed var(--primary-color);
 }
 
-.actions {
-    margin-top: 30px;
+.file-item.drag-over-target {
+    border-bottom: 2px solid var(--success-color); /* Linha verde onde vai cair */
+    transform: translateY(2px);
 }
 
-#juntar {
+/* --- Botão Principal --- */
+.actions { margin-top: 25px; }
+
+#btnAcao {
     width: 100%;
     padding: 16px;
     border: none;
@@ -234,38 +253,31 @@ p {
     justify-content: center;
     gap: 10px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.25);
+    font-family: inherit;
 }
 
-#juntar:not(:disabled):hover {
+#btnAcao:not(:disabled):hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
     filter: brightness(1.1);
 }
 
-#juntar:disabled {
+#btnAcao:disabled {
     background: #334155;
     color: #64748b;
     cursor: not-allowed;
     box-shadow: none;
 }
 
+/* --- Animações --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
+/* --- Responsivo --- */
 @media (max-width: 500px) {
-    .container {
-        padding: 25px;
-        margin: 15px;
-    }
-    header h2 {
-        font-size: 1.5rem;
-    }
+    .container { padding: 20px; margin: 15px; }
+    h2 { font-size: 1.4rem; }
 }
