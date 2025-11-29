@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF para Word | AppOwl</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="background-mesh"></div>
+
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-shapes"></i>
+            AppOwl PDF
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-item">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Juntar PDF</span>
+            </a>
+            <a href="converter.html" class="nav-item active">
+                <i class="fa-solid fa-file-word"></i>
+                <span>PDF p/ Word</span>
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <header>
+                <div class="icon-header">
+                    <i class="fa-solid fa-file-word"></i>
+                </div>
+                <h2>PDF para Word</h2>
+                <p>Converta documentos mantendo a formatação original.</p>
+            </header>
+
+            <div class="upload-area" id="dropZone">
+                <input type="file" id="pdfInput" accept="application/pdf" class="input-hidden">
+                <label for="pdfInput" class="upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                    <span class="upload-text">Clique para selecionar</span>
+                    <span class="upload-hint">Selecione 1 arquivo PDF</span>
+                </label>
+            </div>
+
+            <div id="fileList" class="file-list"></div>
+
+            <div class="actions">
+                <button id="btnConverter" disabled>
+                    <span>Converter Arquivo</span>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="converter.ts"></script>
+</body>
+</html>
