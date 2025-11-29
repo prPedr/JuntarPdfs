@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferramentas PDF Pro</title>
+    <title>Juntar PDFs | AppOwl</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,47 +14,53 @@
     
     <div class="background-mesh"></div>
 
-    <div class="container">
-        
-        <div class="tabs">
-            <button class="tab-btn active" data-mode="merge">
-                <i class="fa-solid fa-layer-group"></i> 
-                Juntar PDFs
-            </button>
-            <button class="tab-btn" data-mode="convert">
-                <i class="fa-solid fa-file-word"></i> 
-                PDF p/ Word
-            </button>
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-shapes"></i>
+            AppOwl PDF
         </div>
-
-        <header>
-            <div class="icon-header" id="headerIcon">
+        <div class="nav-links">
+            <a href="index.html" class="nav-item active">
                 <i class="fa-solid fa-layer-group"></i>
-            </div>
-            <h2 id="tituloFerramenta">Mesclar PDFs</h2>
-            <p id="descFerramenta">Organize seus documentos em um único arquivo rápido e fácil.</p>
-        </header>
-
-        <div class="upload-area" id="dropZone">
-            <input type="file" id="pdfInput" accept="application/pdf" class="input-hidden" multiple>
-            <label for="pdfInput" class="upload-label">
-                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-                <span class="upload-text">Clique para selecionar</span>
-                <span class="upload-hint" id="hintUpload">ou arraste seus arquivos aqui</span>
-            </label>
+                <span>Juntar PDF</span>
+            </a>
+            <a href="converter.html" class="nav-item">
+                <i class="fa-solid fa-file-word"></i>
+                <span>PDF p/ Word</span>
+            </a>
         </div>
+    </nav>
 
-        <div id="fileList" class="file-list">
+    <main>
+        <div class="container">
+            <header>
+                <div class="icon-header">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <h2>Mesclar PDFs</h2>
+                <p>Organize seus documentos arrastando na ordem desejada.</p>
+            </header>
+
+            <div class="upload-area" id="dropZone">
+                <input type="file" id="pdfInput" accept="application/pdf" class="input-hidden" multiple>
+                <label for="pdfInput" class="upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                    <span class="upload-text">Clique para selecionar</span>
+                    <span class="upload-hint">ou arraste múltiplos arquivos</span>
+                </label>
             </div>
 
-        <div class="actions">
-            <button id="btnAcao" disabled>
-                <span>Mesclar Arquivos</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </div>
-    </div>
+            <div id="fileList" class="file-list"></div>
 
-    <script type="module" src="script.ts"></script>
+            <div class="actions">
+                <button id="btnJuntar" disabled>
+                    <span>Mesclar Arquivos</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="merge.ts"></script>
 </body>
 </html>
