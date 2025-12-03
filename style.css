@@ -308,6 +308,75 @@ p {
     box-shadow: none;
 }
 
+/* --- Estilo Exclusivo do Botão Converter --- */
+
+#btnConverter {
+    width: 100%;
+    padding: 18px; /* Um pouco mais alto que o padrão */
+    border: none;
+    border-radius: 14px;
+    
+    /* Gradiente "Mágico" (Indigo para Roxo/Violeta) */
+    background: linear-gradient(135deg, var(--primary-color) 0%, #9333ea 100%);
+    background-size: 200% auto; /* Permite animar o gradiente */
+    
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: uppercase; /* Letras maiúsculas para dar peso */
+    letter-spacing: 0.8px;     /* Espaçamento entre letras */
+    
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    
+    /* Sombra colorida (Glow) */
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
+    
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efeito Hover (Mouse em cima) */
+#btnConverter:not(:disabled):hover {
+    background-position: right center; /* Move o gradiente */
+    transform: translateY(-3px) scale(1.01); /* Sobe e aumenta levemente */
+    box-shadow: 0 10px 25px rgba(147, 51, 234, 0.6); /* Aumenta o brilho */
+    filter: brightness(1.1);
+}
+
+/* Efeito de Clique */
+#btnConverter:not(:disabled):active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 2px 10px rgba(147, 51, 234, 0.4);
+}
+
+/* Animação do Ícone (Varinha) */
+#btnConverter i {
+    transition: transform 0.3s ease;
+}
+
+#btnConverter:not(:disabled):hover i {
+    animation: magicWiggle 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes magicWiggle {
+    0% { transform: rotate(0deg) scale(1); }
+    100% { transform: rotate(15deg) scale(1.2); }
+}
+
+/* Estado Desabilitado (Cinza) */
+#btnConverter:disabled {
+    background: #334155; /* Slate 700 */
+    color: #64748b;      /* Slate 500 */
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
 /* --- Responsivo --- */
 @media (max-width: 600px) {
     .navbar {
