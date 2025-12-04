@@ -147,28 +147,64 @@ function configurarDragAndDropUpload(): void {
 }
 
 // --- Ação Principal (Juntar) ---
+// --- Ação Principal (Juntar) ---
 async function juntarPdfs(): Promise<void> {
     if (arquivosSelecionados.length < 2) return;
 
     const textoOriginal = btnJuntar.innerHTML;
-    btnJuntar.innerHTML = `<span>Processando...</span> <i class="fa-solid fa-spinner fa-spin"></i>`;
     btnJuntar.disabled = true;
 
     try {
         const pdfFinal = await PDFDocument.create();
+        
+        // 1. Definir metadados básicos (Boas práticas)
+        pdfFinal.setTitle('Documento Mesclado - AppOwl Tools');
+        pdfFinal.setCreator('AppOwl PDF Merger');
+        pdfFinal.setProducer('AppOwl PDF Merger');
+        pdfFinal.setCreationDate(new Date());
 
-        for (const arquivo of arquivosSelecionados) {
-            const buffer = await arquivo.arrayBuffer();
-            const pdfOrigem = await PDFDocument.load(buffer);
-            const paginas = await pdfFinal.copyPages(pdfOrigem, pdfOrigem.getPageIndices());
-            paginas.forEach(p => pdfFinal.addPage(p));
+        let arquivosProcessados = 0;
+
+        for (const [index, arquivo] of arquivosSelecionados.entries()) {
+            // 2. Feedback de progresso no botão
+            btnJuntar.innerHTML = `<span>Processando ${index + 1}/${arquivosSelecionados.length}...</span> <i class="fa-solid fa-spinner fa-spin"></i>`;
+
+            try {
+                const buffer = await arquivo.arrayBuffer();
+                
+                // Tenta carregar. Se tiver senha, vai cair no catch abaixo.
+                const pdfOrigem = await PDFDocument.load(buffer);
+
+                // 3. Achatar formulários (Evita bugs visuais em campos de texto)
+                try {
+                    const form = pdfOrigem.getForm();
+                    // flatten() converte campos editáveis em texto/desenho estático
+                    form.flatten(); 
+                } catch (e) {
+                    // Nem todo PDF tem formulário, então ignoramos erro aqui
+                }
+
+                const paginas = await pdfFinal.copyPages(pdfOrigem, pdfOrigem.getPageIndices());
+                paginas.forEach(p => pdfFinal.addPage(p));
+                
+                arquivosProcessados++;
+
+            } catch (erroArquivo) {
+                // 4. Tratamento individual de erro (ex: Senha)
+                console.error(`Erro ao processar ${arquivo.name}:`, erroArquivo);
+                
+                // Opcional: Avisar o usuário que UM arquivo falhou mas continuar os outros
+                // Ou parar tudo (depende da sua regra de negócio). 
+                // Aqui vou lançar um erro para parar tudo e avisar qual arquivo deu ruim.
+                throw new Error(`Não foi possível ler o arquivo "${arquivo.name}". Verifique se ele está corrompido ou protegido por senha.`);
+            }
         }
 
         const pdfBytes = await pdfFinal.save();
 
         Swal.fire({
-            title: 'Pronto!',
-            text: 'Seus PDFs foram unidos com sucesso.',
+            title: 'Sucesso!',
+            text: `${arquivosProcessados} arquivos foram unidos.`,
             icon: 'success',
             confirmButtonColor: '#10b981',
             background: '#1e293b',
@@ -184,9 +220,15 @@ async function juntarPdfs(): Promise<void> {
         link.click();
         URL.revokeObjectURL(url);
 
-    } catch (erro) {
+    } catch (erro: any) {
         console.error(erro);
-        Swal.fire({ title: 'Erro', text: 'Falha ao unir arquivos.', icon: 'error', background: '#1e293b', color: '#fff' });
+        Swal.fire({ 
+            title: 'Ops!', 
+            text: erro.message || 'Falha ao unir arquivos.', 
+            icon: 'error', 
+            background: '#1e293b', 
+            color: '#fff' 
+        });
     } finally {
         // Restaura botão
         if (arquivosSelecionados.length >= 2) {
