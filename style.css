@@ -30,7 +30,6 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    /* Necessário para Navbar no topo e conteúdo abaixo */
 }
 
 /* Fundo Animado (Mesh Gradient) */
@@ -63,6 +62,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: height 0.3s ease;
 }
 
 .brand {
@@ -112,6 +112,8 @@ main {
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
+    /* Garante que em telas pequenas o conteúdo não fique cortado */
+    min-height: calc(100vh - 70px);
 }
 
 /* --- Container da Ferramenta --- */
@@ -221,7 +223,6 @@ p {
     padding-right: 5px;
 }
 
-/* Scrollbar Customizada */
 .file-list::-webkit-scrollbar {
     width: 5px;
 }
@@ -231,7 +232,6 @@ p {
     border-radius: 3px;
 }
 
-/* Item de Arquivo */
 .file-item {
     background: rgba(51, 65, 85, 0.4);
     padding: 12px 16px;
@@ -240,13 +240,10 @@ p {
     align-items: center;
     justify-content: space-between;
     border: 1px solid rgba(255, 255, 255, 0.05);
-
-    /* Propriedades para Drag & Drop */
     transition: transform 0.2s, background-color 0.2s;
     user-select: none;
 }
 
-/* Estados Visuais do Drag & Drop */
 .file-item:active {
     cursor: grabbing;
 }
@@ -292,7 +289,7 @@ p {
     color: var(--danger-color);
 }
 
-/* --- BOTÕES DE AÇÃO (Estilo Unificado) --- */
+/* --- BOTÕES UNIFICADOS --- */
 .actions {
     margin-top: 30px;
 }
@@ -303,31 +300,23 @@ p {
     padding: 18px;
     border: none;
     border-radius: 14px;
-
-    /* Gradiente Padrão da Marca (Indigo) */
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
     background-size: 200% auto;
-
     color: white;
     font-size: 1.05rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-
-    /* Sombra suave inicial (Glow Indigo) */
     box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
-
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
     overflow: hidden;
 }
 
-/* Estados de Hover e Active para ambos */
 #btnJuntar:not(:disabled):hover,
 #btnConverter:not(:disabled):hover {
     background-position: right center;
@@ -342,13 +331,11 @@ p {
     box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
 }
 
-/* Animação do Ícone (Wiggle) */
 #btnJuntar:not(:disabled):hover i,
 #btnConverter:not(:disabled):hover i {
     animation: iconWiggle 0.6s ease-in-out infinite alternate;
 }
 
-/* Estado Desabilitado */
 #btnJuntar:disabled,
 #btnConverter:disabled {
     background: #334155;
@@ -358,7 +345,6 @@ p {
     transform: none;
 }
 
-/* --- Keyframes --- */
 @keyframes iconWiggle {
     0% {
         transform: rotate(0deg) scale(1);
@@ -381,7 +367,70 @@ p {
     }
 }
 
-/* --- Responsivo --- */
+/* --- RESPONSIVIDADE E NOTEBOOKS --- */
+
+/* 1. Notebooks e Tablets (ex: 1366px de largura) */
+@media (max-width: 1366px) {
+    .navbar {
+        height: 60px;
+        /* Navbar mais compacta */
+        padding: 0 30px;
+    }
+
+    .container {
+        padding: 30px;
+        /* Menos espaçamento interno */
+        max-width: 460px;
+    }
+}
+
+/* 2. Telas com pouca altura (Notebooks 16:9, ex: 768px altura) */
+@media (max-height: 800px) {
+    body {
+        /* Permite scroll se o card for maior que a tela */
+        justify-content: flex-start;
+    }
+
+    main {
+        padding: 20px;
+        align-items: flex-start;
+        /* Alinha no topo com margem */
+    }
+
+    .container {
+        margin-top: 10px;
+        margin-bottom: 20px;
+        padding: 25px;
+    }
+
+    header {
+        margin-bottom: 20px;
+    }
+
+    .icon-header {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .file-list {
+        /* Reduz a altura da lista para o botão não sumir da tela */
+        max-height: 180px;
+    }
+
+    .actions {
+        margin-top: 20px;
+    }
+
+    #btnJuntar,
+    #btnConverter {
+        padding: 14px;
+        /* Botão um pouco mais fino na vertical */
+    }
+}
+
+/* 3. Mobile (Celulares) */
 @media (max-width: 600px) {
     .navbar {
         padding: 0 20px;
@@ -391,10 +440,11 @@ p {
         display: none;
     }
 
-    /* Mobile: Mostra só ícones na nav */
+    /* Só ícones na nav */
     .container {
-        padding: 25px;
+        padding: 20px;
         margin: 10px;
+        width: 95%;
     }
 
     h2 {
